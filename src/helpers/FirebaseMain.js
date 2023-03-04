@@ -41,10 +41,13 @@ class FirebaseMain {
 		addDoc(this.colRef, { entry: entry, completed: false });
 	};
 
-	deleteTask = async (id) => {
+	deleteTask = /* async */ (id) => {
 		console.log("deleting2");
 		/* await */ deleteDoc(doc(this.db, this.collectionName, id));
 	};
+
+	updateTask = (id, newData) =>
+		updateDoc(doc(this.db, this.collectionName, id), newData);
 }
 
 export default new FirebaseMain();

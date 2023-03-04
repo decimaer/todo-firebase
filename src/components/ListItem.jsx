@@ -11,21 +11,25 @@ import { useState, useRef, useEffect } from "react";
 
 const ListItem = ({ item, FirebaseMain }) => {
 	const [checked, setChecked] = useState(item.completed);
+
 	const onCheckItem = () => {
 		console.log("check item");
 		setChecked(!checked);
+		FirebaseMain.updateTask(item.id, { completed: !checked });
 	};
+
 	const onDeleteTask = () => {
 		console.log("deleting item...", item.id);
 		FirebaseMain.deleteTask(item.id);
 	};
+
 	return (
 		<Flex className={styles.flexContainer}>
 			<Box>
 				<Checkbox
 					type="checkbox"
 					id={item.id}
-					checked={checked}
+					isChecked={checked}
 					onChange={onCheckItem}
 				>
 					{item.entry}

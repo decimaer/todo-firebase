@@ -46,7 +46,7 @@ const List = ({ todoList, FirebaseMain }) => {
 							required
 							placeholder="Write new todo item"
 						/>
-						<Button type="submit">Add</Button>
+						<Button type="submit">+</Button>
 					</Flex>
 				</form>
 			</Stack>
