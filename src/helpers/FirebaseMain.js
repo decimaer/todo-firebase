@@ -23,7 +23,8 @@ class FirebaseMain {
 		this.app = initializeApp(firebaseConfig);
 		this.db = getFirestore();
 		// Collection ref
-		this.colRef = collection(this.db, "main-list");
+		this.collectionName = "main-list";
+		this.colRef = collection(this.db, this.collectionName);
 	}
 
 	getData = async function () {
@@ -32,8 +33,17 @@ class FirebaseMain {
 		return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 	};
 
-	getSnapshot = async (callback) => {
+	getSnapshot = (callback) => {
 		onSnapshot(this.colRef, callback);
+	};
+
+	postData = function (entry) {
+		addDoc(this.colRef, { entry: entry, completed: false });
+	};
+
+	deleteTask = async (id) => {
+		console.log("deleting2");
+		/* await */ deleteDoc(doc(this.db, this.collectionName, id));
 	};
 }
 
