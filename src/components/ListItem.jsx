@@ -1,7 +1,7 @@
 import { Button, Checkbox, Flex, Input, Box, Text } from "@chakra-ui/react";
 import { useState, useRef } from "react";
 
-const ListItem = ({ item, FirebaseMain, forceRerender }) => {
+const ListItem = ({ item, FirebaseMain }) => {
 	const [checked, setChecked] = useState(item.completed);
 	const [isEditing, setIsEditing] = useState(false);
 	const inputValue = useRef();
