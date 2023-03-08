@@ -77,7 +77,6 @@ class FirebaseMain {
 		try {
 			this.#userCred = await signInWithPopup(this.auth, this.provider);
 
-			console.log(this.#userCred);
 			this.collectionName = `main-list/${this.#userCred.user.uid}/todolist`;
 
 			this.colRef = collection(this.db, this.collectionName);

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Flex, Input, Box } from "@chakra-ui/react";
+import { Button, Checkbox, Flex, Input, Box, Text } from "@chakra-ui/react";
 import { useState, useRef } from "react";
 
 const ListItem = ({ item, FirebaseMain, forceRerender }) => {
@@ -34,7 +34,6 @@ const ListItem = ({ item, FirebaseMain, forceRerender }) => {
 
 	return (
 		<Flex justifyContent="space-between">
-			<div style={{ display: "none" }}>{forceRerender}</div>
 			<Flex>
 				<Checkbox
 					type="checkbox"
@@ -42,14 +41,23 @@ const ListItem = ({ item, FirebaseMain, forceRerender }) => {
 					isChecked={item.completed}
 					onChange={onCheckItem}
 				>
-					{!isEditing && item.entry}
+					{!isEditing && (
+						<Text
+							style={{
+								inlineSize: "250px",
+								overflowWrap: "break-word",
+							}}
+						>
+							{item.entry}
+						</Text>
+					)}
 				</Checkbox>
 				{isEditing && (
 					<Input
 						name="entry"
 						type="text"
 						defaultValue={item.entry}
-						onChange={onPlaceHolder}
+						onChange={() => {}}
 						onBlur={onSaveEditItem}
 						ref={inputValue}
 						autoFocus
