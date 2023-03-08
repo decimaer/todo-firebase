@@ -23,7 +23,7 @@ const List = ({ todoList, FirebaseMain }) => {
 
 		console.log("add new item: " + newItem);
 		//TODO: connect with function to add new item
-		FirebaseMain.postData(newItemRef.current.value);
+		FirebaseMain.postData(FirebaseMain.colRef, newItemRef.current.value);
 		newItemRef.current.value = "";
 	};
 

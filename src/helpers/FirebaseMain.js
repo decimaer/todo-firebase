@@ -1,5 +1,5 @@
 //FIREBASE////////////////////////////////////////////////////
-import firebase from "firebase/compat/app";
+// import firebase from "firebase/compat/app";
 import { initializeApp } from "firebase/app";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -7,15 +7,16 @@ import { initializeApp } from "firebase/app";
 import {
 	getFirestore,
 	collection,
+	getDoc,
 	getDocs,
 	onSnapshot,
+	setDoc,
 	addDoc,
 	deleteDoc,
 	doc,
-	getDoc,
 	updateDoc,
 } from "firebase/firestore";
-import "firebase/compat/firestore";
+// import "firebase/compat/firestore";
 import {
 	getAuth,
 	GoogleAuthProvider,
@@ -24,14 +25,18 @@ import {
 	signInWithPopup,
 	signOut,
 } from "firebase/auth";
-import "firebase/compat/auth";
+// import "firebase/compat/auth";
+// import firebaseui from "firebaseui";
+// import { getUi } from "firebaseui";
 
 // Your web app's Firebase configuration
 import { firebaseConfig } from "./firebaseConfig.js";
 
-console.log(firebaseConfig);
+// console.log(firebaseConfig);
 class FirebaseMain {
 	#userCred;
+	collectionName;
+	colRef;
 
 	constructor() {
 		// Initialize Firebase
@@ -40,12 +45,20 @@ class FirebaseMain {
 		// Initialize Firebase Authentication and get a reference to the service
 		this.auth = getAuth(this.app);
 		this.provider = new GoogleAuthProvider();
+		this.provider.setCustomParameters({
+			prompt: "select_account",
+		});
+		console.log(this.provider);
 
 		// Database and collection
 		this.db = getFirestore();
-		this.collectionName = "main-list";
-		this.colRef = collection(this.db, this.collectionName);
+		// this.collectionName = "main-list";
+		// this.colRef = collection(this.db, this.collectionName);
 	}
+
+	getDocById = async (colName, id) => {
+		return await getDoc(doc(this.db, colName, id));
+	};
 
 	getData = async function () {
 		const data = await getDocs(this.colRef);
@@ -54,11 +67,15 @@ class FirebaseMain {
 	};
 
 	getSnapshot = (callback) => {
-		onSnapshot(this.colRef, callback);
+		this.detachSnapshot = onSnapshot(this.colRef, callback);
 	};
 
-	postData = function (entry) {
-		addDoc(this.colRef, { entry: entry, completed: false });
+	postData = function (colRef, entry) {
+		addDoc(colRef, { entry: entry, completed: false });
+	};
+
+	PostDataById = (colName, id, entry) => {
+		setDoc(doc(this.db, colName, id), entry);
 	};
 
 	deleteTask = (id) => {
@@ -72,16 +89,36 @@ class FirebaseMain {
 	signInWithGoogle = async () => {
 		try {
 			this.#userCred = await signInWithPopup(this.auth, this.provider);
+
+			console.log(this.#userCred);
+			// this.collectionName = `main-list`;
+			this.collectionName = `main-list/${this.#userCred.user.uid}/todolist`;
+
+			this.colRef = collection(this.db, this.collectionName);
+			console.log(this.collectionName);
+			console.log(this.colRef);
+
+			// Initial entry
+			const isExists = await this.getDocById(
+				"main-list",
+				this.#userCred.user.uid
+			);
+			if (!isExists.exists()) {
+				const initColRef = collection(this.db, "main-list");
+				console.log(isExists.exists());
+				this.PostDataById("main-list", this.#userCred.user.uid, {});
+				this.postData(this.colRef, "Add a new to do item below!");
+			}
 		} catch (error) {
 			console.error(error);
 			console.log("failed signing in to user account!");
 		}
+		return "signinwithgoogle done";
 	};
 
 	signOutFromGoogle = async () => {
 		try {
-			console.error(error);
-			await signOut(this.auth);
+			signOut(this.auth);
 		} catch (error) {
 			console.log("failed signing out from user account!");
 			console.error(error);
