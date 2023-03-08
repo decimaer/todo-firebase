@@ -1,36 +1,41 @@
 import { useState, useRef, useEffect } from "react";
 import ListItem from "./ListItem";
 
-import {
-	Input,
-	Stack,
-	FormControl,
-	FormLabel,
-	FormErrorMessage,
-	Button,
-	Heading,
-	Checkbox,
-	CheckboxGroup,
-	Box,
-	Flex,
-} from "@chakra-ui/react";
+import { Input, Stack, Button, Flex } from "@chakra-ui/react";
 
 const List = ({ todoList, FirebaseMain }) => {
 	const newItemRef = useRef();
+
 	const onSubmit = (e) => {
 		e.preventDefault();
 		const newItem = newItemRef.current.value;
 
 		console.log("add new item: " + newItem);
-		//TODO: connect with function to add new item
 		FirebaseMain.postData(FirebaseMain.colRef, newItemRef.current.value);
 		newItemRef.current.value = "";
 	};
 
-	console.log(todoList);
+	const handleMarkAll = () => {
+		todoList.forEach(
+			async (item) =>
+				await FirebaseMain.updateTask(item.id, { completed: true })
+		);
+	};
+	const handleDeleteAll = () => {
+		todoList.forEach(async (item) => await FirebaseMain.deleteTask(item.id));
+	};
+
 	return (
 		<>
 			<Stack spacing={4}>
+				<Flex justifyContent="space-between">
+					<Button onClick={handleMarkAll} colorScheme="green">
+						✅ Mark all as done
+					</Button>
+					<Button onClick={handleDeleteAll} colorScheme="red">
+						🗑 Delete all
+					</Button>
+				</Flex>
 				{todoList.map((item) => (
 					<ListItem
 						item={item}

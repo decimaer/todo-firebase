@@ -1,5 +1,3 @@
-//FIREBASE////////////////////////////////////////////////////
-// import firebase from "firebase/compat/app";
 import { initializeApp } from "firebase/app";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -16,23 +14,16 @@ import {
 	doc,
 	updateDoc,
 } from "firebase/firestore";
-// import "firebase/compat/firestore";
 import {
 	getAuth,
 	GoogleAuthProvider,
-	signInWithRedirect,
-	getRedirectResult,
 	signInWithPopup,
 	signOut,
 } from "firebase/auth";
-// import "firebase/compat/auth";
-// import firebaseui from "firebaseui";
-// import { getUi } from "firebaseui";
 
 // Your web app's Firebase configuration
 import { firebaseConfig } from "./firebaseConfig.js";
 
-// console.log(firebaseConfig);
 class FirebaseMain {
 	#userCred;
 	collectionName;
@@ -48,12 +39,9 @@ class FirebaseMain {
 		this.provider.setCustomParameters({
 			prompt: "select_account",
 		});
-		console.log(this.provider);
 
 		// Database and collection
 		this.db = getFirestore();
-		// this.collectionName = "main-list";
-		// this.colRef = collection(this.db, this.collectionName);
 	}
 
 	getDocById = async (colName, id) => {
@@ -79,7 +67,6 @@ class FirebaseMain {
 	};
 
 	deleteTask = (id) => {
-		console.log("deleting2");
 		deleteDoc(doc(this.db, this.collectionName, id));
 	};
 
@@ -91,12 +78,9 @@ class FirebaseMain {
 			this.#userCred = await signInWithPopup(this.auth, this.provider);
 
 			console.log(this.#userCred);
-			// this.collectionName = `main-list`;
 			this.collectionName = `main-list/${this.#userCred.user.uid}/todolist`;
 
 			this.colRef = collection(this.db, this.collectionName);
-			console.log(this.collectionName);
-			console.log(this.colRef);
 
 			// Initial entry
 			const isExists = await this.getDocById(
@@ -127,5 +111,3 @@ class FirebaseMain {
 }
 
 export default new FirebaseMain();
-
-//END FIREBASE////////////////////////////////////////////////////

@@ -1,18 +1,7 @@
-import styles from "./ListItem.module.scss";
-import {
-	Button,
-	Checkbox,
-	IconButton,
-	Flex,
-	Spacer,
-	Input,
-	Box,
-	FormControl,
-	FormErrorMessage,
-} from "@chakra-ui/react";
-import { useState, useRef, useEffect } from "react";
+import { Button, Checkbox, Flex, Input, Box } from "@chakra-ui/react";
+import { useState, useRef } from "react";
 
-const ListItem = ({ item, FirebaseMain }) => {
+const ListItem = ({ item, FirebaseMain, forceRerender }) => {
 	const [checked, setChecked] = useState(item.completed);
 	const [isEditing, setIsEditing] = useState(false);
 	const inputValue = useRef();
@@ -20,7 +9,7 @@ const ListItem = ({ item, FirebaseMain }) => {
 	const onCheckItem = () => {
 		console.log("check item");
 		setChecked(!checked);
-		FirebaseMain.updateTask(item.id, { completed: !checked });
+		FirebaseMain.updateTask(item.id, { completed: !item.completed });
 	};
 
 	const onSaveEditItem = () => {
@@ -36,33 +25,21 @@ const ListItem = ({ item, FirebaseMain }) => {
 			setIsEditing(!isEditing);
 			console.log("edit item");
 		}
-		if (isEditing) {
-			// save value
-			// onSaveEditItem();
-		}
-		// inputValue.focus();
-		// setTimeout(() => inputValue.current.focus(), 500);
 	};
-
-	const test = () => {};
 
 	const onDeleteTask = () => {
 		console.log("deleting item...", item.id);
 		FirebaseMain.deleteTask(item.id);
 	};
 
-	const onPlaceHolder = () => {
-		// console.log("change");
-		// console.log(inputValue.current.value);
-	};
-
 	return (
-		<Flex className={styles.flexContainer}>
+		<Flex justifyContent="space-between">
+			<div style={{ display: "none" }}>{forceRerender}</div>
 			<Flex>
 				<Checkbox
 					type="checkbox"
 					id={item.id}
-					isChecked={checked}
+					isChecked={item.completed}
 					onChange={onCheckItem}
 				>
 					{!isEditing && item.entry}
